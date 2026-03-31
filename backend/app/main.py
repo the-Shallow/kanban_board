@@ -7,7 +7,7 @@ app = FastAPI(title="Kanban Board");
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "https://kanban-board-hazel-seven-44.vercel.app/"],
     allow_credentials=True, 
     allow_methods=["*"],
     allow_headers=["*"],

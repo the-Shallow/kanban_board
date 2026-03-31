@@ -1,6 +1,11 @@
 import { getAccessToken } from "./auth";
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api'
+// Development API base URL
+// const API_BASE_URL = 'http://127.0.0.1:8000/api'
+
+// Production API base URL (uncomment when deploying)
+const API_BASE_URL = 'https://kanban-board-8zj2.onrender.com/api'
+
 
 async function apiFetch(path: string,  options: RequestInit = {}) {
     const token = await getAccessToken()
