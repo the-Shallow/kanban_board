@@ -40,7 +40,7 @@ def create_task(payload:TaskCreate, deps:tuple[Client, str] = Depends(get_user_s
 
     if not user_id:
         raise HTTPException(status_code=401, detail="User not found")
-    
+       
     insert_payload = {
         "user_id": user_id,
         "board_id": payload.board_id,

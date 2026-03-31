@@ -129,6 +129,7 @@ export function NewTaskDialog({open, onOpenChange, onSubmit}: NewTaskDialogProps
                                     >
 
                                         <CalendarIcon className="mr-2 h-3.5 w-3.5" />
+                                        {dueDate ? format(dueDate, "PPP") : "Select date"}
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0 bg-card border-border" align="start">

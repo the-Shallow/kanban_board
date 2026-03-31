@@ -216,7 +216,7 @@ export function KanbanBoard() {
             title,
             description: description ?? null,
             priority: priority ?? "medium",
-            due_date: dueDate ?? null,
+            dueDate: dueDate ?? null,
             status: "todo",
             position: 0,
         });
