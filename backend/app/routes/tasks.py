@@ -48,7 +48,7 @@ def create_task(payload:TaskCreate, deps:tuple[Client, str] = Depends(get_user_s
         "description": payload.description,
         "status": payload.status,
         "priority": payload.priority,
-        "dueDate": payload.due_date.isoformat(),
+        "dueDate": payload.dueDate.isoformat(),
         "position": payload.position,
     }
 
