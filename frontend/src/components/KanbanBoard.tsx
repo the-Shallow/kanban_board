@@ -60,7 +60,7 @@ export function KanbanBoard() {
             if(!boards) return;
 
             try{
-                console.log(boards)
+                // console.log(boards)
                 const taskData = await api.get(`/tasks?board_id=${boards.id}`);
 
                 const mappedTasks = taskData.map((task:any) => ({
@@ -109,7 +109,7 @@ export function KanbanBoard() {
 
     const handleDragOver = (event: DragOverEvent) => {
         const {active, over} = event;
-        console.log(active, over);
+        // console.log(active, over);
         if(!over) return;
 
         const activeId = String(active.id);
@@ -118,12 +118,12 @@ export function KanbanBoard() {
         if(!activeTask) return;
 
         const isOverColumn = COLUMNS.some(c => c.id === overId);
-        console.log("Is over column?", isOverColumn);
-        console.log("Active task:", activeTask);
+        // console.log("Is over column?", isOverColumn);
+        // console.log("Active task:", activeTask);
 
         if(isOverColumn){
             const targetColumnId = overId as ColumnId;
-            console.log("Target column id:", targetColumnId);
+            // console.log("Target column id:", targetColumnId);
             if(activeTask.columnId !== targetColumnId){
                 setTasks(prev => 
                     prev.map(t => (t.id === activeId ? {...t, columnId: targetColumnId} : t))
@@ -133,7 +133,7 @@ export function KanbanBoard() {
         }
 
         const overTask = tasks.find(t => String(t.id) === overId);
-        console.log("Over task:", overTask);
+        // console.log("Over task:", overTask);
         // console.log("Active task:", activeTask);
         if(overTask && activeTask.columnId !== overTask.columnId){
             setTasks(prev => 
@@ -238,7 +238,7 @@ export function KanbanBoard() {
             description: updated.description,
             status: updated.columnId,
             priority: updated.priority,
-            due_date: updated.dueDate ?? null,
+            dueDate: updated.dueDate ?? null,
         });
 
         const mappedTask = {

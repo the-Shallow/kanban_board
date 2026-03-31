@@ -116,7 +116,7 @@ export function TaskDetailPanel({task, onClose, onUpdate}: TaskDetailPanelProps)
                 task_id: task.id,
                 content: commentText.trim()
             });
-            console.log(createdComment)
+            // console.log(createdComment)
             update({comments:[...(localTask.comments || []), createdComment]});
             setCommentText("");
             await loadActivityLogs(task.id);
