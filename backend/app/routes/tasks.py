@@ -163,6 +163,7 @@ def update_task(
     
     existing_task = existing_response.data[0]
     update_payload = payload.model_dump(exclude_none=True)
+    print(update_payload)
     if "dueDate" in update_payload and update_payload["dueDate"] is not None:
         update_payload["dueDate"] = update_payload["dueDate"].isoformat()
     response = (

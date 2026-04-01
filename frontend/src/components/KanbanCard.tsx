@@ -3,6 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Calendar } from "lucide-react";
 import type { Task } from "@/types/kanban_types";
 import type React from "react";
+import {parse, format} from "date-fns";
 
 const priorityConfig = {
     low: {label:"Low", className:"bg-priority-low/15 text-priority-low"},
@@ -13,7 +14,8 @@ const priorityConfig = {
 function dueDateUrgency(dueDate: string) : "overdue" | "soon" | "future" {
     const now = new Date();
     now.setHours(0,0,0,0);
-    const due = new Date(dueDate);
+    // const due = new Date(dueDate);
+    const due = parse(dueDate, "yyyy-MM-dd", new Date());
     due.setHours(0,0,0,0);
     const diffDays = (due.getTime() - now.getTime()) / (1000*60*60*24);
     if(diffDays < 0) return "overdue";
@@ -77,7 +79,7 @@ export function KanbanCard({task, onClick}: KanbanCardProps) {
             {task.dueDate && urgency && (
                 <span className={`flex items-center gap-1 text-[11px] font-medium ${urgencyStyles[urgency]}`}>
                     <Calendar className="w-3 h-3"></Calendar>
-                    {new Date(task.dueDate).toLocaleDateString("en-US", {month:"short", day:"numeric"})}
+                    {format(parse(task.dueDate, "yyyy-MM-dd", new Date()), "MMM d")}
                 </span>
             )}
             </div>

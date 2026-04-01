@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import {format, formatDistanceToNow } from "date-fns";
+import {format, parse, formatDistanceToNow } from "date-fns";
 import { X, CalendarIcon, Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -38,6 +38,7 @@ export function TaskDetailPanel({task, onClose, onUpdate}: TaskDetailPanelProps)
     const titleRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
+        console.log("Loading task details for:", task);
         setLocalTask(task);
         setIsClosing(false);
 
@@ -95,9 +96,13 @@ export function TaskDetailPanel({task, onClose, onUpdate}: TaskDetailPanelProps)
     //     return [...(localTask.activity || []), item];
     // }
 
+    const parseDateOnly = (value?: string) => value ? parse(value, "yyyy-MM-dd", new Date()) : undefined;
+
     const update = (changes: Partial<Task>) => {
+        console.log(changes)
         // const activity = activityType ? addActivity(activityType, activityDetail) : localTask.activity;
         const updated = {...localTask, ...changes};
+        console.log(updated)
         setLocalTask(updated);
         onUpdate(updated);
     }
@@ -278,8 +283,8 @@ export function TaskDetailPanel({task, onClose, onUpdate}: TaskDetailPanelProps)
                                         )}
                                     >
                                         <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {/* {console.log(new Date(localTask.dueDate))} */}
-                                        {localTask.dueDate ? format(new Date(localTask.dueDate), "PPP")
+                                        {localTask.dueDate
+                                        ? format(parse(localTask.dueDate, "yyyy-MM-dd", new Date()), "PPP")
                                         : "Pick a Date"}
                                     </Button>
                                 </PopoverTrigger>
@@ -287,8 +292,8 @@ export function TaskDetailPanel({task, onClose, onUpdate}: TaskDetailPanelProps)
                                 <PopoverContent className="w-auto p-0 bg-card border-border" align="start">
                                     <Calendar
                                         mode="single"
-                                        selected={localTask.dueDate ? new Date(localTask.dueDate) : undefined}
-                                        onSelect={(date) => update({dueDate : date?.toISOString().split("T")[0]})}
+                                        selected={parseDateOnly(localTask.dueDate)}
+                                        onSelect={(date) => update({dueDate : new Date(date).toISOString().split("T")[0]})}
                                         initialFocus
                                         // className={cn("p-3 pointer-events-auto")}
                                     />

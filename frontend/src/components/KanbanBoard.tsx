@@ -66,6 +66,7 @@ export function KanbanBoard() {
 
                 const mappedTasks = taskData.map((task:any) => ({
                     ...task,
+                    dueDate: task.dueDate ? task.dueDate.slice(0, 10) : undefined,
                     columnId: task.status
                 }));
 
@@ -244,6 +245,7 @@ export function KanbanBoard() {
     }
 
     const handleTaskUpdate = async (updated : Task) => {
+        console.log("Updating task:", updated);
         const updatedTask = await api.patch(`/tasks/${updated.id}`, {
             title: updated.title,
             description: updated.description,
@@ -254,6 +256,7 @@ export function KanbanBoard() {
 
         const mappedTask = {
             ...updatedTask,
+            dueDate: updatedTask.dueDate ? updatedTask.dueDate.slice(0, 10) : undefined,
             columnId: updatedTask.status
         }
         setTasks(prev => prev.map(t => (t.id === mappedTask.id ? mappedTask : t)));
