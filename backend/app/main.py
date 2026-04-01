@@ -1,3 +1,8 @@
+"""
+This module initializes the FastAPI application, configures middleware
+(such as CORS), and registers all route modules including boards,
+tasks, comments, and task activity logs.
+"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 

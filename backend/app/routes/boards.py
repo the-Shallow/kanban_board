@@ -1,3 +1,8 @@
+"""
+This module defines endpoints for creating and retrieving user-specific
+boards. It integrates with Supabase for database operations and uses
+authentication dependencies to ensure requests are tied to a valid user.
+"""
 from fastapi import APIRouter, Depends, HTTPException
 from supabase import Client
 
@@ -8,6 +13,21 @@ router = APIRouter()
 
 @router.post("")
 def create_board(payload: BoardCreate, deps: tuple[Client, str] = Depends(get_user_supabase_client)):
+    """
+    Create a new board for the authenticated user.
+
+    This endpoint:
+    1. Extracts the authenticated user via dependency injection.
+    2. Constructs a board payload using request data.
+    3. Inserts the board into the Supabase "boards" table.
+
+    Args:
+        payload (BoardCreate): Request body containing board details.
+        deps (tuple): Contains (Supabase client, user_id).
+
+    Returns:
+        dict: Newly created board record.
+    """
     supabase, user_id = deps
     # user_response = supabase.auth.get_user()
     # user = user_response.user
@@ -26,13 +46,27 @@ def create_board(payload: BoardCreate, deps: tuple[Client, str] = Depends(get_us
 
 @router.post("/default")
 def default_board(deps: tuple[Client,str] = Depends(get_user_supabase_client)):
+    """
+    Retrieve or create a default board for the authenticated user.
+
+    This endpoint:
+    1. Checks if the user already has a board.
+    2. If yes, returns the earliest created board.
+    3. If not, creates a default board and returns it.
+
+    Args:
+        deps (tuple): Contains (Supabase client, user_id).
+
+    Returns:
+        dict: Existing or newly created default board.
+    """
     supabase, user_id = deps
 
     existing = (
         supabase.table("boards").select("*").order("created_at").limit(1).execute()
     )
 
-    print(existing)
+    # print(existing)
 
     if existing.data:
         return existing.data[0]

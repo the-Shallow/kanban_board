@@ -1,3 +1,9 @@
+"""
+This module defines a Settings class that loads This module defines a Settings class that loads environment variables
+using Pydantic's BaseSettings. It reads values from a `.env` file and
+provides type-safe access to required configuration such as Supabase
+credentials.
+"""
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):

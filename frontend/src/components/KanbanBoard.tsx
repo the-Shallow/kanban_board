@@ -22,6 +22,7 @@ import { Select,
     SelectValue
  } from "@/components/ui/select";
 import { KanbanColumn } from "./KanbanColumn";
+import { KanbanBoardSkeleton } from "./KanbanBoardSkeleton";
 import { KanbanCard } from "./KanbanCard";
 import { TaskDetailPanel } from "./TaskDetailPanel";
 import { COLUMNS, SAMPLE_TASKS, type ColumnId, type Task, type Board, type Priority } from "@/types/kanban_types";
@@ -32,7 +33,7 @@ import { api } from "@/lib/api";
 export function KanbanBoard() {
     const [boards, setBoards] = useState<Board>();
     const [loading, setLoading] = useState(true);
-    const [tasks, setTasks] = useState<Task[]>(SAMPLE_TASKS);
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [dialogOpen, setDiaglogOpen] = useState(false);
@@ -89,6 +90,16 @@ export function KanbanBoard() {
             return true;
         });
     }, [tasks, search, priorityFilter]);
+
+    const stats = useMemo(() => {
+        const total = tasks.length;
+        const done = tasks.filter(t => t.columnId === "done").length;
+        const overdue = tasks.filter(t => {
+            return new Date(t.dueDate) < new Date() && t.columnId !== "done";
+        }).length;
+        return {total, done, overdue};
+    }, [tasks]);
+
 
     const getColumnTasks = useCallback(
         (columnId: ColumnId) => filteredTasks.filter(t => t.columnId === columnId),
@@ -249,10 +260,19 @@ export function KanbanBoard() {
         setSelectedTask(mappedTask);
     };
 
+    if (loading) return <KanbanBoardSkeleton />;
+
     return (
         <div className="flex flex-col h-screen bg-background">
             <header className="flex items-center justify-between px-6 py-4 border-b border-border">
-                <h1 className="text-lg font-semibold text-foreground tracking-tight">Kanban Board</h1>
+                <div className="flex items-center gap-3">
+                    <h1 className="text-lg font-semibold text-foreground tracking-tight">Kanban Board</h1>
+                    <div className="flex items-center gap-3">
+                        <span className="text-xs text-muted-foreground"><span className="font-medium text-foreground">{stats.total}</span> tasks</span>
+                        <span className="text-xs text-muted-foreground"><span className="font-medium text-foreground">{stats.done}</span> done</span>
+                        <span className="text-xs text-muted-foreground"><span className={`font-medium ${stats.overdue > 0 ? "text-destructive": "text-foreground"}`}>{stats.overdue}</span> overdue</span>
+                    </div>
+                </div>
                 <Button
                     size="sm"
                     onClick={() => setDiaglogOpen(true)}

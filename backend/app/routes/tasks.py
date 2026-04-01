@@ -1,3 +1,11 @@
+"""
+This module provides endpoints for creating, retrieving, updating,
+and deleting tasks. It supports filtering, ordering, and integrates
+with task activity logging to track changes such as creation,
+updates, and status transitions.
+
+All operations are scoped to authenticated users via Supabase.
+"""
 from fastapi import APIRouter, Depends, HTTPException, Query
 from supabase import Client
 from ..core.deps import get_user_supabase_client
@@ -13,6 +21,22 @@ def list_tasks(
     status: str | None = Query(default=None),
     deps: tuple[Client, str] = Depends(get_user_supabase_client)
 ):
+    """
+    Retrieve tasks with optional filtering.
+
+    This endpoint:
+    1. Fetches all tasks for the authenticated user.
+    2. Optionally filters by board_id and/or status.
+    3. Orders tasks by position (for Kanban ordering).
+
+    Args:
+        board_id (str | None): Filter tasks by board ID.
+        status (str | None): Filter tasks by status column.
+        deps (tuple): Contains (Supabase client, user_id).
+
+    Returns:
+        list: List of task records.
+    """
     supabase, user_id = deps
     query = supabase.table("tasks").select("*")
 
@@ -26,6 +50,19 @@ def list_tasks(
 
 @router.get("/{task_id}")
 def get_task(task_id:str, deps:tuple[Client,str] = Depends(get_user_supabase_client)):
+    """
+    Retrieve a single task by ID.
+
+    Args:
+        task_id (str): ID of the task.
+        deps (tuple): Contains (Supabase client, user_id).
+
+    Returns:
+        dict: Task record.
+
+    Raises:
+        HTTPException: If task is not found.
+    """
     supabase, user_id = deps
     response = supabase.table("tasks").select("*").eq("id", task_id).limit(1).execute()
 
@@ -36,6 +73,26 @@ def get_task(task_id:str, deps:tuple[Client,str] = Depends(get_user_supabase_cli
 
 @router.post("")
 def create_task(payload:TaskCreate, deps:tuple[Client, str] = Depends(get_user_supabase_client)):
+    """
+    Create a new task.
+
+    This endpoint:
+    1. Validates the authenticated user.
+    2. Inserts a new task into the database.
+    3. Logs the task creation event.
+
+    Args:
+        payload (TaskCreate): Task creation data.
+        deps (tuple): Contains (Supabase client, user_id).
+
+    Returns:
+        dict: Newly created task.
+
+    Raises:
+        HTTPException:
+            - 401 if user is not authenticated
+            - 400 if task creation fails
+    """
     supabase, user_id = deps
 
     if not user_id:
@@ -76,6 +133,25 @@ def update_task(
     payload: TaskUpdate,
     deps: tuple[Client, str] = Depends(get_user_supabase_client),
 ):
+    """
+    Update an existing task.
+
+    This endpoint:
+    1. Fetches the existing task.
+    2. Applies partial updates.
+    3. Logs either a status change or general update.
+
+    Args:
+        task_id (str): ID of the task.
+        payload (TaskUpdate): Fields to update.
+        deps (tuple): Contains (Supabase client, user_id).
+
+    Returns:
+        dict: Updated task.
+
+    Raises:
+        HTTPException: If task is not found.
+    """
     supabase, user_id = deps
 
     existing_response = (
@@ -122,6 +198,19 @@ def update_task(
 
 @router.delete("/{task_id}")
 def delete_task(task_id: str, supabase:Client = Depends(get_user_supabase_client)):
+    """
+    Delete a task by ID.
+
+    Args:
+        task_id (str): ID of the task.
+        supabase (Client): Supabase client instance.
+
+    Returns:
+        dict: Confirmation message.
+
+    Raises:
+        HTTPException: If task is not found.
+    """
     response = supabase.table("tasks").delete().eq("id", task_id).execute()
 
     if not response.data:

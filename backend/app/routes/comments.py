@@ -1,3 +1,8 @@
+"""
+This module provides endpoints for listing and creating comments
+associated with tasks. It integrates with Supabase for database
+operations and ensures all actions are performed by authenticated users.
+"""
 from fastapi import APIRouter, Depends, HTTPException, Query
 from supabase import Client
 
@@ -11,6 +16,21 @@ def list_comment(
     task_id: str = Query(...),
     deps: tuple[Client,str] = Depends(get_user_supabase_client)
 ):
+    """
+    Retrieve all comments for a specific task.
+
+    This endpoint:
+    1. Accepts a task_id as a query parameter.
+    2. Fetches all comments linked to the task.
+    3. Orders comments by creation time (ascending).
+
+    Args:
+        task_id (str): ID of the task whose comments are to be fetched.
+        deps (tuple): Contains (Supabase client, user_id).
+
+    Returns:
+        list: List of comment records associated with the task.
+    """
     supabase, user_id = deps
     response = (
         supabase.table("comments").select("*").eq("task_id", task_id).order("created_at").execute()
@@ -21,6 +41,25 @@ def list_comment(
 
 @router.post("")
 def create_comment(payload: CommentCreate, deps: tuple[Client,str] = Depends(get_user_supabase_client)):
+    """
+    Create a new comment for a task.
+
+    This endpoint:
+    1. Validates the authenticated user.
+    2. Constructs a comment payload using request data.
+    3. Inserts the comment into the Supabase "comments" table.
+
+    Args:
+        payload (CommentCreate): Request body containing comment details.
+        deps (tuple): Contains (Supabase client, user_id).
+
+    Returns:
+        dict: Newly created comment record.
+
+    Raises:
+        HTTPException:
+            - 401 if user is not authenticated.
+    """
     supabase, user_id = deps
     # user_response = supabase.auth.get_user()
     # user = user_response.user

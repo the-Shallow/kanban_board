@@ -1,3 +1,7 @@
+"""
+This module defines Pydantic models for creating comments and returning
+comment data from the API.
+"""
 from datetime import datetime
 from pydantic import BaseModel, Field
 

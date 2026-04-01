@@ -1,3 +1,7 @@
+"""
+This module defines Pydantic models used for creating boards and
+serializing board data returned from the API.
+"""
 from datetime import datetime
 from pydantic import BaseModel
 

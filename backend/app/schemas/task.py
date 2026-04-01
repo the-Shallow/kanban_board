@@ -1,3 +1,8 @@
+"""
+This module defines Pydantic models for creating, updating, and returning
+tasks. It supports task attributes such as status, priority, due dates,
+positioning (for Kanban ordering), and associated labels.
+"""
 from datetime import datetime
 from pydantic import BaseModel, Field
 

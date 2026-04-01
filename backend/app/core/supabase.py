@@ -1,3 +1,8 @@
+"""
+This module provides a utility function to create and return a Supabase
+client instance using project credentials defined in application settings.
+It centralizes client creation for reuse across the application.
+"""
 from supabase import Client, create_client
 from app.core.config import settings
 
