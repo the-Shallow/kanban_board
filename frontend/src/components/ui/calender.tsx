@@ -25,12 +25,12 @@ function Calendar({
         caption_label: "text-sm font-medium",
         nav: "flex items-center gap-1",
         button_previous: cn(
-          buttonVariants({ variant: "outline" }),
-          "absolute left-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          buttonVariants({ variant: "outline", size:"icon" }),
+          "absolute left-2 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
         button_next: cn(
-          buttonVariants({ variant: "outline" }),
-          "absolute right-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          buttonVariants({ variant: "outline", size:"icon" }),
+          "absolute right-2 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
         month_grid: "w-full border-collapse",
         weekdays: "flex",

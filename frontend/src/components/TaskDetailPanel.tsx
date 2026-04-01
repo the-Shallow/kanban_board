@@ -284,13 +284,13 @@ export function TaskDetailPanel({task, onClose, onUpdate}: TaskDetailPanelProps)
                                     </Button>
                                 </PopoverTrigger>
 
-                                <PopoverContent>
+                                <PopoverContent className="w-auto p-0 bg-card border-border" align="start">
                                     <Calendar
                                         mode="single"
                                         selected={localTask.dueDate ? new Date(localTask.dueDate) : undefined}
                                         onSelect={(date) => update({dueDate : date?.toISOString().split("T")[0]})}
                                         initialFocus
-                                        className={cn("p-3 pointer-events-auto")}
+                                        // className={cn("p-3 pointer-events-auto")}
                                     />
                                 </PopoverContent>
                             </Popover>
