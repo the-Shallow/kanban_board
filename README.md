@@ -88,26 +88,26 @@ A full-stack Kanban board application built with **React, FastAPI, and Supabase*
 ## ⚙️ Setup Instructions
 
 ### 1. Clone Repository
-git clone <your-repo-link>
-cd <project-folder>
+git clone https://github.com/the-Shallow/kanban_board <br>
+cd kanban_board
 
 ### 2. Backend Setup
-cd backend
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+cd backend <br>
+python -m venv venv <br>
+source venv/bin/activate   # Windows: venv\Scripts\activate <br>
+pip install -r requirements.txt 
 
 ### 3. ENV File
-SUPERBASE_PROJECT_URL=your_url
+SUPERBASE_PROJECT_URL=your_url <br>
 SUPERBASE_PUBLIC_KEY=your_key
 
 ### 4. Run Backend
 uvicorn app.main:app --reload
 
 ### 5. Frontend Setup
-cd frontend
-npm install
-npm run dev
+cd frontend <br>
+npm install <br>
+npm run dev <br>
 
 ## 🔐 Security
 - Uses Supabase authentication with JWT
