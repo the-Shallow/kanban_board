@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import {format, parse, formatDistanceToNow } from "date-fns";
+import {format, parse, formatDistanceToNow, isValid } from "date-fns";
 import { X, CalendarIcon, Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -20,7 +20,6 @@ import { Separator } from "./ui/separator";
 import type {Task, ColumnId, Priority, Comment, ActivityItem} from "@/types/kanban_types";
 import {COLUMNS} from "@/types/kanban_types";
 import { api } from "@/lib/api";
-import type { Action } from "@dnd-kit/core/dist/store";
 
 interface TaskDetailPanelProps {
     task: Task;
@@ -142,6 +141,18 @@ export function TaskDetailPanel({task, onClose, onUpdate}: TaskDetailPanelProps)
             handleAddComment();
         }
     }
+
+    const safeParseDueDate = (value?: string) => {
+        if (!value) return null;
+
+        const parsedDateOnly = parse(value, "yyyy-MM-dd", new Date());
+        if (isValid(parsedDateOnly)) return parsedDateOnly;
+
+        const nativeDate = new Date(value);
+        if (isValid(nativeDate)) return nativeDate;
+
+        return null;
+    };
 
     const getActivityMessages = (item: any) : string[] => {
         if( item.action_type === "task_created") {
@@ -284,7 +295,7 @@ export function TaskDetailPanel({task, onClose, onUpdate}: TaskDetailPanelProps)
                                     >
                                         <CalendarIcon className="mr-2 h-4 w-4" />
                                         {localTask.dueDate
-                                        ? format(parse(localTask.dueDate, "yyyy-MM-dd", new Date()), "PPP")
+                                        ? format(safeParseDueDate(localTask.dueDate), "PPP")
                                         : "Pick a Date"}
                                     </Button>
                                 </PopoverTrigger>
