@@ -3,7 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Calendar } from "lucide-react";
 import type { Task } from "@/types/kanban_types";
 import type React from "react";
-import {parse, format} from "date-fns";
+import {parse, format, parseISO, isValid} from "date-fns";
 
 const priorityConfig = {
     low: {label:"Low", className:"bg-priority-low/15 text-priority-low"},
@@ -11,11 +11,23 @@ const priorityConfig = {
     high: {label:"High", className:"bg-priority-high/15 text-priority-high"},
 };
 
+function parseDueDate(dueDate: string) {
+    if(!dueDate) return null;
+
+    const parsed = parseISO(dueDate);
+
+    if(isValid(parsed)) return parsed;
+
+    const fallbackParsed = new Date(dueDate);
+    return isValid(fallbackParsed) ? fallbackParsed : null;
+}
+
 function dueDateUrgency(dueDate: string) : "overdue" | "soon" | "future" {
     const now = new Date();
     now.setHours(0,0,0,0);
     // const due = new Date(dueDate);
-    const due = parse(dueDate, "yyyy-MM-dd", new Date());
+    // const due = parse(dueDate, "yyyy-MM-dd", new Date());
+    const due = parseDueDate(dueDate);
     due.setHours(0,0,0,0);
     const diffDays = (due.getTime() - now.getTime()) / (1000*60*60*24);
     if(diffDays < 0) return "overdue";
@@ -55,6 +67,7 @@ export function KanbanCard({task, onClick}: KanbanCardProps) {
         }
     };
 
+    const parsedDueDate = task.dueDate ? parseDueDate(task.dueDate) : null;
     const urgency = task.dueDate ? dueDateUrgency(task.dueDate) : null;
     // const visibleLabels = (task.lab)
 
@@ -79,7 +92,7 @@ export function KanbanCard({task, onClick}: KanbanCardProps) {
             {task.dueDate && urgency && (
                 <span className={`flex items-center gap-1 text-[11px] font-medium ${urgencyStyles[urgency]}`}>
                     <Calendar className="w-3 h-3"></Calendar>
-                    {format(parse(task.dueDate, "yyyy-MM-dd", new Date()), "MMM d")}
+                    {format(parsedDueDate, "MMM d")}
                 </span>
             )}
             </div>
